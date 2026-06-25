@@ -1,11 +1,12 @@
 const API_URL = 'https://jsonplaceholder.typicode.com/posts';
 const container = document.getElementById('posts-container');
+const searchInput = document.querySelector('.search-input');
 
 async function fetchPosts() {
   const response = await fetch(API_URL);
   if (response.ok === false) {
-    console.log('Something went wrong with the fetch');
-    throw new Error(`HTTP error! status: ${response.status}`);
+    console.log('fetch hato');
+    throw new Error(`${response.status}`);
   }
   const data = await response.json();
   return data;
@@ -55,7 +56,7 @@ function showPosts(posts) {
 }
 
 function showLoadingMessage() {
-  container.innerHTML = '<div class="loading">Loading posts…</div>';
+  container.innerHTML = '<div class="loading">zagruzka</div>';
 }
 
 function showErrorMessage(message) {
@@ -68,10 +69,21 @@ async function main() {
   try {
     const posts = await fetchPosts();
     showPosts(posts);
+
+    searchInput.addEventListener('input', function () {
+      const term = searchInput.value;
+      const cards = document.querySelectorAll('.card');
+      for (let i = 0; i < cards.length; i++) {
+        const title = cards[i].querySelector('.card-title').textContent;
+        cards[i].style.display = title.includes(term) ? '' : 'none';
+      }
+    });
   } catch (error) {
-    console.log('Caught an error:', error);
+    console.log('oshibka:', error);
     showErrorMessage(error.message);
   }
 }
 
 main();
+
+
